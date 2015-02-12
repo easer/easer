@@ -12,6 +12,8 @@ import com.vaadin.annotations.Widgetset;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.converter.StringToBigDecimalConverter;
 import com.vaadin.data.validator.BeanValidator;
+import com.vaadin.event.ShortcutAction;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.ui.*;
@@ -35,7 +37,7 @@ public class EaserUI extends UI {
     private JPAContainer<TankFuellung> tankFuellungJPAContainer = new JPAContainer<>(
             TankFuellung.class);
 
-    private Button btnNeueTankfuellung = new Button("neue Tankfüllung");
+    private Button btnNeueTankfuellung = new Button("neue Tankfüllung...", FontAwesome.CAR);
     private TabSheet tsMain = new TabSheet();
     private VerticalLayout tabTanken = new VerticalLayout();
 
@@ -74,11 +76,12 @@ public class EaserUI extends UI {
         fldDatum.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.datum.name()));
 
         TextField fldFahrer = new TextField("Fahrer");
+        fldFahrer.setRequired(true);
         fldFahrer.setNullRepresentation("");
         fldFahrer.setImmediate(true);
         fldFahrer.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.fahrer.name()));
 
-        TextField fldMenge = new TextField("Tankfüllung");
+        TextField fldMenge = new TextField("Tankfüllung [Liter]");
         fldMenge.setNullRepresentation("");
         fldMenge.setImmediate(true);
         fldMenge.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.menge.name()));
@@ -90,7 +93,8 @@ public class EaserUI extends UI {
         fldPreisProLiter.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.preisProLiter.name()));
         fldPreisProLiter.setConverter(new StringToBigDecimalConverter());
 
-        TextField fldPreisTotal = new TextField("Kosten Total");
+        TextField fldPreisTotal = new TextField("Kosten Total [CHF]");
+        fldPreisTotal.setRequired(true);
         fldPreisTotal.setNullRepresentation("");
         fldPreisTotal.setImmediate(true);
         fldPreisTotal.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.preisTotal.name()));
@@ -107,8 +111,8 @@ public class EaserUI extends UI {
         FormLayout formLayout = new FormLayout();
         formLayout.setSizeUndefined();
         formLayout.setMargin(true);
-        Button speichernButton = new Button("Speichern");
-
+        Button speichernButton = new Button("Speichern", FontAwesome.SAVE);
+        speichernButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         speichernButton.addClickListener(saveEvent -> {
             try {
                 fieldGroup.commit();
@@ -121,6 +125,8 @@ public class EaserUI extends UI {
         });
         fieldGroup.getFields().forEach(formLayout::addComponent);
         formLayout.addComponent(speichernButton);
+        formLayout.addComponent(speichernButton);
+
         return formLayout;
     }
 
@@ -128,7 +134,7 @@ public class EaserUI extends UI {
         final Table tblTankfuellung = new Table();
         tblTankfuellung.setContainerDataSource(tankFuellungJPAContainer);
         tblTankfuellung.setVisibleColumns("datum", "fahrer", "menge", "preisProLiter", "preisTotal");
-        tblTankfuellung.setColumnHeaders("Datum", "Fahrer", "Tankfüllung", "CHF/Liter", "Kosten Total");
+        tblTankfuellung.setColumnHeaders("Datum", "Fahrer", "Tankfüllung [Liter]", "CHF/Liter", "Kosten Total [CHF]");
         tblTankfuellung.setColumnAlignment("menge", Table.Align.RIGHT);
         tblTankfuellung.setColumnAlignment("preisProLiter", Table.Align.RIGHT);
         tblTankfuellung.setColumnAlignment("preisTotal", Table.Align.RIGHT);
