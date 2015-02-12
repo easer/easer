@@ -76,6 +76,7 @@ public class EaserUI extends UI {
         fldDatum.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.datum.name()));
 
         TextField fldFahrer = new TextField("Fahrer");
+        fldFahrer.setInputPrompt("Elvis Presley");
         fldFahrer.setRequired(true);
         fldFahrer.setNullRepresentation("");
         fldFahrer.setImmediate(true);
@@ -83,18 +84,21 @@ public class EaserUI extends UI {
 
         TextField fldMenge = new TextField("Tankfüllung [Liter]");
         fldMenge.setNullRepresentation("");
+        fldMenge.setInputPrompt("61.25");
         fldMenge.setImmediate(true);
         fldMenge.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.menge.name()));
         fldMenge.setConverter(new StringToBigDecimalConverter());
 
         TextField fldPreisProLiter = new TextField("CHF/Liter");
         fldPreisProLiter.setNullRepresentation("");
+        fldPreisProLiter.setInputPrompt("1.45");
         fldPreisProLiter.setImmediate(true);
         fldPreisProLiter.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.preisProLiter.name()));
         fldPreisProLiter.setConverter(new StringToBigDecimalConverter());
 
         TextField fldPreisTotal = new TextField("Kosten Total [CHF]");
         fldPreisTotal.setRequired(true);
+        fldPreisTotal.setInputPrompt("88.81");
         fldPreisTotal.setNullRepresentation("");
         fldPreisTotal.setImmediate(true);
         fldPreisTotal.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.preisTotal.name()));
@@ -109,10 +113,14 @@ public class EaserUI extends UI {
 
     private FormLayout buildForm(FieldGroup fieldGroup, Window window) {
         FormLayout formLayout = new FormLayout();
-        formLayout.setSizeUndefined();
+
         formLayout.setMargin(true);
+        formLayout.setSizeUndefined();
+
         Button speichernButton = new Button("Speichern", FontAwesome.SAVE);
         speichernButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+
+
         speichernButton.addClickListener(saveEvent -> {
             try {
                 fieldGroup.commit();
@@ -124,7 +132,6 @@ public class EaserUI extends UI {
             }
         });
         fieldGroup.getFields().forEach(formLayout::addComponent);
-        formLayout.addComponent(speichernButton);
         formLayout.addComponent(speichernButton);
 
         return formLayout;
