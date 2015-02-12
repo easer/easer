@@ -78,7 +78,7 @@ public class EaserUI extends UI {
         fldFahrer.setImmediate(true);
         fldFahrer.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.fahrer.name()));
 
-        TextField fldMenge = new TextField("Menge");
+        TextField fldMenge = new TextField("Tankfüllung");
         fldMenge.setNullRepresentation("");
         fldMenge.setImmediate(true);
         fldMenge.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.menge.name()));
@@ -90,7 +90,7 @@ public class EaserUI extends UI {
         fldPreisProLiter.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.preisProLiter.name()));
         fldPreisProLiter.setConverter(new StringToBigDecimalConverter());
 
-        TextField fldPreisTotal = new TextField("Total");
+        TextField fldPreisTotal = new TextField("Kosten Total");
         fldPreisTotal.setNullRepresentation("");
         fldPreisTotal.setImmediate(true);
         fldPreisTotal.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.preisTotal.name()));
@@ -128,7 +128,7 @@ public class EaserUI extends UI {
         final Table tblTankfuellung = new Table();
         tblTankfuellung.setContainerDataSource(tankFuellungJPAContainer);
         tblTankfuellung.setVisibleColumns("datum", "fahrer", "menge", "preisProLiter", "preisTotal");
-        tblTankfuellung.setColumnHeaders("Datum", "Fahrer", "Menge", "Preis pro Liter", "Preis Total");
+        tblTankfuellung.setColumnHeaders("Datum", "Fahrer", "Tankfüllung", "CHF/Liter", "Kosten Total");
         tblTankfuellung.setColumnAlignment("menge", Table.Align.RIGHT);
         tblTankfuellung.setColumnAlignment("preisProLiter", Table.Align.RIGHT);
         tblTankfuellung.setColumnAlignment("preisTotal", Table.Align.RIGHT);
