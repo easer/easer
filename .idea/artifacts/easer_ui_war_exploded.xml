@@ -23,6 +23,7 @@
           <element id="archive" name="easer-widgetset-1.0-SNAPSHOT.jar">
             <element id="module-output" name="easer-widgetset" />
           </element>
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-lang3:3.0" />
           <element id="library" level="project" name="Maven: com.vaadin.addon:jpacontainer:3.2.0" />
           <element id="library" level="project" name="Maven: org.hibernate:hibernate-validator:5.1.0.CR1" />
           <element id="library" level="project" name="Maven: javax.validation:validation-api:1.1.0.Final" />
