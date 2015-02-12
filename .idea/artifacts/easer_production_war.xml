@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="easer-production:war">
+    <output-path>$PROJECT_DIR$/easer-production/target</output-path>
+    <root id="archive" name="easer-production-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="easer-production:war exploded" />
+    </root>
+  </artifact>
+</component>

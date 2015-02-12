@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/easer.iml" filepath="$PROJECT_DIR$/easer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/easer-production/easer-production.iml" filepath="$PROJECT_DIR$/easer-production/easer-production.iml" />
+      <module fileurl="file://$PROJECT_DIR$/easer-ui/easer-ui.iml" filepath="$PROJECT_DIR$/easer-ui/easer-ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/easer-widgetset/easer-widgetset.iml" filepath="$PROJECT_DIR$/easer-widgetset/easer-widgetset.iml" />
+    </modules>
+  </component>
+</project>
