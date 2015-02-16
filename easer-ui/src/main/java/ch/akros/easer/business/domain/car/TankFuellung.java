@@ -2,6 +2,7 @@ package ch.akros.easer.business.domain.car;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,17 +19,19 @@ public class TankFuellung {
     private Integer id;
     @Version
     private Long version;
-    @Digits(integer = 2, fraction = 2)
+    @Digits(integer = 2, fraction = 2, message = "{ch.akros.easer.business.domain.car.tankfuellung.bigdecimal}")
     private BigDecimal menge;
-    @Digits(integer = 2, fraction = 2)
+    @Digits(integer = 2, fraction = 2, message = "{ch.akros.easer.business.domain.car.tankfuellung.bigdecimal}")
     private BigDecimal preisProLiter;
-    @Digits(integer = 4, fraction = 2)
+    @NotNull
+    @Digits(integer = 4, fraction = 2, message = "{ch.akros.easer.business.domain.car.tankfuellung.bigdecima.preistotal}")
     private BigDecimal preisTotal;
     @Convert(converter = LocalDatePersistenceConverter.class)
     private LocalDate datum = LocalDate.now();
     @Size(min = 0, max = 100)
     private String bemerkung;
-    @Size(min = 2, max = 100)
+    @NotNull
+    
     private String fahrer;
 
     public TankFuellung() {

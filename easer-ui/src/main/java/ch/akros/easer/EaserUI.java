@@ -12,16 +12,22 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.data.util.converter.StringToBigDecimalConverter;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.window.WindowMode;
 import com.vaadin.ui.*;
+import de.steinwedel.messagebox.ButtonId;
+import de.steinwedel.messagebox.Icon;
+import de.steinwedel.messagebox.MessageBox;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  *
@@ -46,6 +52,8 @@ public class EaserUI extends UI {
     private TabSheet tsMain = new TabSheet();
     private VerticalLayout tabTanken = new VerticalLayout();
     private Table tblTankfuellung = new Table();
+
+    private Properties propValidationMessages;
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -72,8 +80,21 @@ public class EaserUI extends UI {
         setSizeFull();
     }
 
-    private FieldGroup buildAndBindFieldGroup(EntityItem entityItem) {
+    @PostConstruct
+    private void init() {
+        propValidationMessages = new Properties();
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        InputStream stream = loader.getResourceAsStream("ValidationMessages.properties");
+        try {
+            propValidationMessages.load(stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private FieldGroup buildAndBindFieldGroup(EntityItem<TankFuellung> entityItem) {
         final FieldGroup fieldGroup = new FieldGroup();
+        fieldGroup.setBuffered(true);
         fieldGroup.setItemDataSource(entityItem);
 
         // create Fields
@@ -81,31 +102,33 @@ public class EaserUI extends UI {
         fldDatum.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.datum.name()));
 
         TextField fldFahrer = new TextField(FAHRER);
-        fldFahrer.setInputPrompt("Elvis Presley");
-        fldFahrer.setRequired(true);
         fldFahrer.setNullRepresentation("");
+        fldFahrer.setInputPrompt("Elvis Presley");
         fldFahrer.setImmediate(true);
+        fldFahrer.setRequired(true);
         fldFahrer.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.fahrer.name()));
 
         TextField fldMenge = new TextField(MENGE);
         fldMenge.setNullRepresentation("");
         fldMenge.setInputPrompt("61.25");
         fldMenge.setImmediate(true);
+        fldMenge.setConversionError(propValidationMessages.getProperty("ch.akros.easer.business.domain.car.tankfuellung.bigdecimal"));
         fldMenge.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.menge.name()));
-        fldMenge.setConverter(new StringToBigDecimalConverter());
 
         TextField fldPreisProLiter = new TextField(PREIS_PRO_LITER);
+
         fldPreisProLiter.setNullRepresentation("");
         fldPreisProLiter.setInputPrompt("1.45");
         fldPreisProLiter.setImmediate(true);
+        fldPreisProLiter.setConversionError(propValidationMessages.getProperty("ch.akros.easer.business.domain.car.tankfuellung.bigdecimal"));
         fldPreisProLiter.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.preisProLiter.name()));
-        fldPreisProLiter.setConverter(new StringToBigDecimalConverter());
 
         TextField fldPreisTotal = new TextField(KOSTEN_TOTAL);
         fldPreisTotal.setRequired(true);
         fldPreisTotal.setInputPrompt("88.81");
         fldPreisTotal.setNullRepresentation("");
         fldPreisTotal.setImmediate(true);
+        fldPreisTotal.setConversionError(propValidationMessages.getProperty("ch.akros.easer.business.domain.car.tankfuellung.bigdecimal.preistotal"));
         fldPreisTotal.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.preisTotal.name()));
 
         fieldGroup.bind(fldDatum, TankFuellung.Properties.datum.name());
@@ -116,15 +139,14 @@ public class EaserUI extends UI {
         return fieldGroup;
     }
 
-    private FormLayout buildForm(FieldGroup fieldGroup, Window window) {
+    private FormLayout buildForm(final FieldGroup fieldGroup, Window window) {
         FormLayout formLayout = new FormLayout();
-
         formLayout.setMargin(true);
         formLayout.setSizeUndefined();
-
         Button speichernButton = new Button("Speichern", FontAwesome.SAVE);
         speichernButton.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-
+        fieldGroup.getFields().forEach(formLayout::addComponent);
+        formLayout.addComponent(speichernButton);
 
         speichernButton.addClickListener(saveEvent -> {
             try {
@@ -137,26 +159,40 @@ public class EaserUI extends UI {
                     tankFuellungJPAContainer.refreshItem(entityItem.getItemId());
                 }
                 window.close();
-            } catch (FieldGroup.CommitException e) {
-                // validateException
+            } catch (FieldGroup.CommitException commitException) {
+                Notification.show("Die Speicherung ist fehlgeschlagen. Bitte Mussfelder korrekt ausfüllen.",
+                        Notification.Type.WARNING_MESSAGE);
+
+                return;
             }
         });
-        fieldGroup.getFields().forEach(formLayout::addComponent);
-        formLayout.addComponent(speichernButton);
 
         return formLayout;
     }
 
     private Table buildTable() {
 
+        final String CRUD_COLUMN = "crud";
+
         tblTankfuellung.setContainerDataSource(tankFuellungJPAContainer);
-        tblTankfuellung.addGeneratedColumn("d", (source, itemId, columnId) -> {
+        tblTankfuellung.addGeneratedColumn(CRUD_COLUMN, (source, itemId, columnId) -> {
 
             Button deleteButton = new Button("", FontAwesome.MINUS);
             Button editButton = new Button("", FontAwesome.EDIT);
             HorizontalLayout crudLayout = new HorizontalLayout(deleteButton, editButton);
             crudLayout.setSpacing(true);
-            deleteButton.addClickListener(event -> source.getContainerDataSource().removeItem(itemId));
+            deleteButton.addClickListener(event -> MessageBox.showPlain(Icon.QUESTION,
+                    "Tankfüllung löschen...",
+                    "Wollen Sie die Tankfüllung wirklich löschen?",
+                    buttonId -> {
+                        if (buttonId == ButtonId.YES) {
+                            source.getContainerDataSource().removeItem(itemId);
+                        } else {
+
+                        }
+                    },
+                    ButtonId.YES,
+                    ButtonId.NO));
 
             editButton.addClickListener(event -> {
                 EntityItem item = (EntityItem) source.getContainerDataSource().getItem(itemId);
@@ -174,20 +210,20 @@ public class EaserUI extends UI {
         tblTankfuellung.setConverter(TankFuellung.Properties.preisTotal.name(), new CurrencyStringToBigDecimalConverter());
         tblTankfuellung.setConverter(TankFuellung.Properties.preisProLiter.name(), new CurrencyStringToBigDecimalConverter());
 
-        tblTankfuellung.setVisibleColumns("d", TankFuellung.Properties.datum.name(),
+        tblTankfuellung.setVisibleColumns(CRUD_COLUMN, TankFuellung.Properties.datum.name(),
                 TankFuellung.Properties.fahrer.name(),
                 TankFuellung.Properties.menge.name(),
                 TankFuellung.Properties.preisProLiter.name(),
                 TankFuellung.Properties.preisTotal.name()
         );
 
-        tblTankfuellung.setColumnWidth("d", 130);
+        tblTankfuellung.setColumnWidth(CRUD_COLUMN, 130);
         tblTankfuellung.setColumnHeaders("", DATUM, FAHRER, MENGE, PREIS_PRO_LITER, KOSTEN_TOTAL);
         tblTankfuellung.setColumnAlignment(TankFuellung.Properties.menge.name(), Table.Align.RIGHT);
         tblTankfuellung.setColumnAlignment(TankFuellung.Properties.preisProLiter.name(), Table.Align.RIGHT);
         tblTankfuellung.setColumnAlignment(TankFuellung.Properties.preisTotal.name(), Table.Align.RIGHT);
 
-        tblTankfuellung.setColumnAlignment("d", Table.Align.CENTER);
+        tblTankfuellung.setColumnAlignment(CRUD_COLUMN, Table.Align.CENTER);
         tblTankfuellung.setSizeFull();
         tblTankfuellung.setPageLength(0);
         return tblTankfuellung;

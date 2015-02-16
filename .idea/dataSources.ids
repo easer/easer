@@ -13,7 +13,7 @@
       <column name="preistotal" sqlType="numeric" precision="6" scale="2" nullable="true" jdbcType="2"/>
       <column name="datum" sqlType="date" precision="13" scale="0" nullable="true" jdbcType="91"/>
       <column name="bemerkung" sqlType="bpchar" precision="100" scale="0" nullable="true" jdbcType="1"/>
-      <column name="fahrer" sqlType="bpchar" precision="100" scale="0" nullable="true" jdbcType="1"/>
+      <column name="fahrer" sqlType="varchar" precision="100" scale="0" nullable="true" jdbcType="12"/>
       <column name="version" sqlType="numeric" precision="131089" scale="0" nullable="true" jdbcType="2"/>
     </table>
     <table name="tankfuellung_id_seq" schema="public" catalog="easer" type="SEQUENCE">
