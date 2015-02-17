@@ -7,10 +7,10 @@ import ch.akros.easer.ui.DefaultStringToBigDecimalConverter;
 import ch.akros.easer.ui.LocalDateField;
 import com.vaadin.addon.jpacontainer.EntityItem;
 import com.vaadin.addon.jpacontainer.JPAContainer;
-import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Widgetset;
+import com.vaadin.cdi.CDIUI;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.event.ShortcutAction;
@@ -23,7 +23,6 @@ import de.steinwedel.messagebox.Icon;
 import de.steinwedel.messagebox.MessageBox;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,8 +34,8 @@ import java.util.Properties;
 @Theme("mytheme")
 @Widgetset("ch.akros.MyAppWidgetset")
 @Title("easer")
-@SessionScoped
-@PreserveOnRefresh
+@CDIUI("")
+@SuppressWarnings("serial")
 public class EaserUI extends UI {
 
     private final static String DATUM = "Datum";

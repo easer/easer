@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" version="2.1">
     <persistence-unit name="easerpu" transaction-type="JTA">
-        <jta-data-source>java:jboss/datasources/PostgreSQLDS</jta-data-source>
+        <jta-data-source>java:jboss/datasources/easer</jta-data-source>
+        <!--<jta-data-source>java:jboss/datasources/PostgreSQLDS</jta-data-source>-->
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
     </persistence-unit>
 </persistence>

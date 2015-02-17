@@ -76,6 +76,12 @@
             <version>2.0.7</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-cdi</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+
         <!-- Import the EJB API. -->
         <dependency>
             <groupId>org.jboss.spec.javax.ejb</groupId>

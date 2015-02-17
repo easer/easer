@@ -52,6 +52,9 @@
     <orderEntry type="library" name="Maven: com.vaadin.addon:jpacontainer:3.2.0" level="project" />
     <orderEntry type="library" name="Maven: de.steinwedel.vaadin.addon:messagebox:2.0.7" level="project" />
     <orderEntry type="library" name="Maven: com.vaadin:vaadin-client-compiled:7.0.2" level="project" />
+    <orderEntry type="library" name="Maven: com.vaadin:vaadin-cdi:1.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.deltaspike.core:deltaspike-core-api:1.0.3" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.deltaspike.core:deltaspike-core-impl:1.0.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.spec.javax.ejb:jboss-ejb-api_3.2_spec:1.0.0.Final" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-validator:5.1.0.CR1" level="project" />
     <orderEntry type="library" name="Maven: javax.validation:validation-api:1.1.0.Final" level="project" />

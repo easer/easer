@@ -32,6 +32,8 @@
     <entry_points version="2.0" />
   </component>
   <component name="FrameworkDetectionExcludesConfiguration">
+    <file url="file://$PROJECT_DIR$/easer-production/overlays" />
+    <file type="gwt" url="file://$PROJECT_DIR$/easer-production" />
     <file type="gwt" url="file://$PROJECT_DIR$/easer-widgetset" />
     <file type="web" url="file://$PROJECT_DIR$/easer-production" />
     <file type="web" url="file://$PROJECT_DIR$/easer-ui" />
