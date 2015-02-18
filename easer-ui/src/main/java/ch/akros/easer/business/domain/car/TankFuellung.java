@@ -11,7 +11,16 @@ import java.time.LocalDate;
  * Created by lukovics on 09.02.2015.
  */
 @Entity
+@NamedQueries({
+        @NamedQuery(name = TankFuellung.FIND_ALL,
+                query = TankFuellung.FIND_ALL_QUERY),
+        @NamedQuery(name = "TankFuellung.findByFahrer",
+                query = "SELECT t FROM TankFuellung t WHERE t.fahrer = :fahrer"),
+})
 public class TankFuellung {
+
+    public final static String FIND_ALL = "TankFuellung.findAll";
+    protected final static String FIND_ALL_QUERY = "SELECT t FROM TankFuellung t";
 
     @Id
     @SequenceGenerator(name = "tankfuellung_id_seq", sequenceName = "tankfuellung_id_seq", allocationSize = 1)
@@ -31,7 +40,7 @@ public class TankFuellung {
     @Size(min = 0, max = 100)
     private String bemerkung;
     @NotNull
-    
+
     private String fahrer;
 
     public TankFuellung() {

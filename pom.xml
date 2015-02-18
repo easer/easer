@@ -132,6 +132,6 @@
     <modules>
         <module>easer-widgetset</module>
         <module>easer-ui</module>
-        <module>easer-production</module>
+        <!--<module>easer-production</module>-->
     </modules>
 </project>
