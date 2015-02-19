@@ -20,9 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import java.time.Month;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -51,7 +49,7 @@ public class DchartsViewTab extends CustomComponent implements EaserTab {
         // iterate over all years
         for (int year : years) {
 
-            HashMap<Month, List<TankFuellung>> yearMap = new HashMap<>();
+            Map<Month, List<TankFuellung>> yearMap = new HashMap<>();
             List<TankFuellung> tankfuellungenInYear = namedQuery.getResultList().stream().filter(e -> e.getDatum().getYear() == year).collect(Collectors.toList());
 
             List<TankFuellung> tankfulInJanuary = namedQuery.getResultList().stream().filter(e -> e.getDatum().getMonth() == Month.JANUARY).collect(Collectors.toList());
@@ -80,15 +78,56 @@ public class DchartsViewTab extends CustomComponent implements EaserTab {
             yearMap.put(Month.NOVEMBER, tankfulInNovmeber);
             yearMap.put(Month.DECEMBER, tankfulInDecember);
 
-
-            for (Map.Entry<Month, List<TankFuellung>> entry : yearMap.entrySet()) {
-
-
-            }
-            Object[] mengeProTankfuellungenListe = tankfuellungenInYear.stream().map(e -> e.getMenge().doubleValue()).toArray();
+            Month monthWithMostTankfuellungen = getMonthWithMostTankfuellungen(yearMap);
+            int sizeOfThisMonth = yearMap.get(monthWithMostTankfuellungen).size();
 
             DataSeries dataSeries = new DataSeries();
-            dataSeries.add(mengeProTankfuellungenListe);
+            for (int i = 0; i < sizeOfThisMonth; i++) {
+                List<Double> data = new ArrayList<>(Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0));
+                for (Map.Entry<Month, List<TankFuellung>> entry : yearMap.entrySet()) {
+                    if (entry.getValue().size() > i) {
+                        switch (entry.getKey()) {
+                            case JANUARY:
+                                data.set(0, entry.getValue().get(i).getMenge().doubleValue());
+                                break;
+                            case FEBRUARY:
+                                data.set(1, entry.getValue().get(i).getMenge().doubleValue());
+                                break;
+                            case MARCH:
+                                data.set(2, entry.getValue().get(i).getMenge().doubleValue());
+                                break;
+                            case APRIL:
+                                data.set(3, entry.getValue().get(i).getMenge().doubleValue());
+                                break;
+                            case MAY:
+                                data.set(4, entry.getValue().get(i).getMenge().doubleValue());
+                                break;
+                            case JUNE:
+                                data.set(5, entry.getValue().get(i).getMenge().doubleValue());
+                                break;
+                            case JULY:
+                                data.set(6, entry.getValue().get(i).getMenge().doubleValue());
+                                break;
+                            case AUGUST:
+                                data.set(7, entry.getValue().get(i).getMenge().doubleValue());
+                                break;
+                            case SEPTEMBER:
+                                data.set(8, entry.getValue().get(i).getMenge().doubleValue());
+                                break;
+                            case OCTOBER:
+                                data.set(9, entry.getValue().get(i).getMenge().doubleValue());
+                                break;
+                            case NOVEMBER:
+                                data.set(10, entry.getValue().get(i).getMenge().doubleValue());
+                                break;
+                            case DECEMBER:
+                                data.set(11, entry.getValue().get(i).getMenge().doubleValue());
+                                break;
+                        }
+                    }
+                }
+                dataSeries.add(data.toArray());
+            }
 
             SeriesDefaults seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.BAR);
             Axes axes = new Axes().addAxis(new XYaxis()
@@ -112,6 +151,19 @@ public class DchartsViewTab extends CustomComponent implements EaserTab {
         }
 
         setCompositionRoot(layout);
+    }
+
+    private Month getMonthWithMostTankfuellungen(Map<Month, List<TankFuellung>> yearMap) {
+
+        Month month = Month.JANUARY;
+        int size = 0;
+        for (Map.Entry<Month, List<TankFuellung>> entry : yearMap.entrySet()) {
+            if (entry.getValue().size() > size) {
+                size = entry.getValue().size();
+                month = entry.getKey();
+            }
+        }
+        return month;
     }
 
     @Override
