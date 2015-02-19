@@ -14,14 +14,19 @@ import java.time.LocalDate;
 @NamedQueries({
         @NamedQuery(name = TankFuellung.FIND_ALL,
                 query = TankFuellung.FIND_ALL_QUERY),
-        @NamedQuery(name = "TankFuellung.findByFahrer",
-                query = "SELECT t FROM TankFuellung t WHERE t.fahrer = :fahrer"),
+        @NamedQuery(name = TankFuellung.FIND_BY_FAHRER,
+                query = TankFuellung.FIND_BY_FAHRER_QUERY),
+        @NamedQuery(name = TankFuellung.FIND_ALL_IN_YEAR,
+                query = TankFuellung.FIND_ALL_IN_YEAR_QUERY),
 })
 public class TankFuellung {
 
     public final static String FIND_ALL = "TankFuellung.findAll";
+    public static final String FIND_BY_FAHRER = "TankFuellung.findByFahrer";
+    public static final String FIND_BY_FAHRER_QUERY = "SELECT t FROM TankFuellung t WHERE t.fahrer = :fahrer";
+    public static final String FIND_ALL_IN_YEAR = "TankFuellung.findAllInYear";
+    public static final String FIND_ALL_IN_YEAR_QUERY = "SELECT t FROM TankFuellung t WHERE FUNCTION('date_part','year', t.datum)=:datum";
     protected final static String FIND_ALL_QUERY = "SELECT t FROM TankFuellung t";
-
     @Id
     @SequenceGenerator(name = "tankfuellung_id_seq", sequenceName = "tankfuellung_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tankfuellung_id_seq")
@@ -100,6 +105,17 @@ public class TankFuellung {
 
     public Long getVersion() {
         return version;
+    }
+
+    public TankFuellung copy() {
+        TankFuellung entity = new TankFuellung();
+        entity.setFahrer(this.getFahrer());
+        entity.setBemerkung(this.getBemerkung());
+        entity.setDatum(this.getDatum());
+        entity.setMenge(this.getMenge());
+        entity.setPreisProLiter(this.getPreisProLiter());
+        entity.setPreisTotal(this.getPreisTotal());
+        return entity;
     }
 
     public enum Properties {

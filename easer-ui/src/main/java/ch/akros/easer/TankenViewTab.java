@@ -1,7 +1,6 @@
 package ch.akros.easer;
 
 import ch.akros.easer.business.domain.car.TankFuellung;
-import ch.akros.easer.business.domain.car.TankFuellungProviderBean;
 import ch.akros.easer.ui.CurrencyStringToBigDecimalConverter;
 import ch.akros.easer.ui.DefaultStringToBigDecimalConverter;
 import ch.akros.easer.ui.EaserTab;
@@ -35,21 +34,17 @@ public class TankenViewTab extends CustomComponent implements EaserTab {
     private final static String PREIS_PRO_LITER = "Kosten/Liter";
     private final static String KOSTEN_TOTAL = "Kosten Total";
     private Properties propValidationMessages;
-    private JPAContainer<TankFuellung> tankFuellungJPAContainer = new JPAContainer<>(
-            TankFuellung.class);
+
+    @Inject
+    private JPAContainer<TankFuellung> tankFuellungJPAContainer;
+
     private Button btnNeueTankfuellung = new Button("neue Tankfüllung...", FontAwesome.CAR);
     private VerticalLayout tabTanken = new VerticalLayout();
     private Table tblTankfuellung = new Table();
 
-    @Inject
-    private TankFuellungProviderBean tankFuellungProviderBean;
-
     @PostConstruct
     private void init() {
         readProperties();
-        // set the provider first, we use it everywhere
-        tankFuellungJPAContainer.setEntityProvider(tankFuellungProviderBean);
-
         btnNeueTankfuellung.addClickListener(windowEvent -> {
                     EntityItem<TankFuellung> entityItem = tankFuellungJPAContainer.createEntityItem(new TankFuellung());
                     Window detailWindow = buildDetailWindow();
@@ -162,8 +157,12 @@ public class TankenViewTab extends CustomComponent implements EaserTab {
         tblTankfuellung.addGeneratedColumn(CRUD_COLUMN, (source, itemId, columnId) -> {
 
             Button deleteButton = new Button("", FontAwesome.MINUS);
+            deleteButton.setDescription("Löschen");
             Button editButton = new Button("", FontAwesome.EDIT);
-            HorizontalLayout crudLayout = new HorizontalLayout(deleteButton, editButton);
+            editButton.setDescription("Bearbeiten");
+            Button copyButton = new Button("", FontAwesome.COPY);
+            copyButton.setDescription("Kopieren");
+            HorizontalLayout crudLayout = new HorizontalLayout(deleteButton, editButton, copyButton);
             crudLayout.setSpacing(true);
             deleteButton.addClickListener(event -> MessageBox.showPlain(Icon.QUESTION,
                     "Tankfüllung löschen...",
@@ -186,6 +185,11 @@ public class TankenViewTab extends CustomComponent implements EaserTab {
                 detailWindow.setContent(formLayout);
                 UI.getCurrent().addWindow(detailWindow);
             });
+            copyButton.addClickListener(event -> {
+                EntityItem item = (EntityItem) source.getContainerDataSource().getItem(itemId);
+                TankFuellung tankFuellung = (TankFuellung) item.getEntity();
+                tankFuellungJPAContainer.addEntity(tankFuellung.copy());
+            });
             return crudLayout;
         });
 
@@ -201,7 +205,7 @@ public class TankenViewTab extends CustomComponent implements EaserTab {
                 TankFuellung.Properties.preisTotal.name()
         );
 
-        tblTankfuellung.setColumnWidth(CRUD_COLUMN, 130);
+        tblTankfuellung.setColumnWidth(CRUD_COLUMN, 185);
         tblTankfuellung.setColumnHeaders("", DATUM, FAHRER, MENGE, PREIS_PRO_LITER, KOSTEN_TOTAL);
         tblTankfuellung.setColumnAlignment(TankFuellung.Properties.menge.name(), Table.Align.RIGHT);
         tblTankfuellung.setColumnAlignment(TankFuellung.Properties.preisProLiter.name(), Table.Align.RIGHT);

@@ -33,7 +33,7 @@ public class EaserUI extends UI {
     protected void init(VaadinRequest vaadinRequest) {
         tsMain.setStyleName("ts-main");
         tsMain.addTab(tankenView, "tanken");
-        tsMain.addTab(dchartsViewTab, "dchartsViewTab");
+        tsMain.addTab(dchartsViewTab, "dashboard");
         tsMain.addSelectedTabChangeListener(changeEvent -> ((EaserTab) changeEvent.getTabSheet().getSelectedTab()).reload());
         setContent(tsMain);
         setSizeFull();
