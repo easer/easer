@@ -23,9 +23,9 @@ public class EaserUI extends UI {
 
     @Inject
     private TankenViewTab tankenView;
-    @Inject
-    private ChartsViewTab chartsViewTab;
 
+    @Inject
+    private DchartsViewTab dchartsViewTab;
 
     private TabSheet tsMain = new TabSheet();
 
@@ -33,7 +33,7 @@ public class EaserUI extends UI {
     protected void init(VaadinRequest vaadinRequest) {
         tsMain.setStyleName("ts-main");
         tsMain.addTab(tankenView, "tanken");
-        tsMain.addTab(chartsViewTab, "charts");
+        tsMain.addTab(dchartsViewTab, "dchartsViewTab");
         tsMain.addSelectedTabChangeListener(changeEvent -> ((EaserTab) changeEvent.getTabSheet().getSelectedTab()).reload());
         setContent(tsMain);
         setSizeFull();
