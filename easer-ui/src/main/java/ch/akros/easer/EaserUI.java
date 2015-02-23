@@ -22,10 +22,10 @@ import javax.inject.Inject;
 public class EaserUI extends UI {
 
     @Inject
-    private TankenViewTab tankenView;
+    private TankenView tankenView;
 
     @Inject
-    private DchartsViewTab dchartsViewTab;
+    private DChartsView dchartsViewTab;
 
     private TabSheet tsMain = new TabSheet();
 

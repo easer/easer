@@ -26,7 +26,7 @@ import java.util.Properties;
 /**
  * Created by lukovics on 17.02.2015.
  */
-public class TankenViewTab extends CustomComponent implements EaserTab {
+public class TankenView extends CustomComponent implements EaserTab {
 
     private final static String DATUM = "Datum";
     private final static String FAHRER = "Fahrer";

@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukovics on 19.02.2015.
  */
-public class DchartsViewTab extends CustomComponent implements EaserTab {
+public class DChartsView extends CustomComponent implements EaserTab {
 
     @Inject
     private JPAContainer<TankFuellung> tankFuellungJPAContainer;
