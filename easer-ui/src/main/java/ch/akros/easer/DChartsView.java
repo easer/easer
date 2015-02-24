@@ -8,6 +8,7 @@ import com.vaadin.ui.VerticalLayout;
 import org.dussan.vaadin.dcharts.DCharts;
 import org.dussan.vaadin.dcharts.base.elements.XYaxis;
 import org.dussan.vaadin.dcharts.base.elements.XYseries;
+import org.dussan.vaadin.dcharts.canvasoverlays.DashedHorizontalLine;
 import org.dussan.vaadin.dcharts.data.DataSeries;
 import org.dussan.vaadin.dcharts.data.Ticks;
 import org.dussan.vaadin.dcharts.metadata.TooltipAxes;
@@ -21,6 +22,7 @@ import org.dussan.vaadin.dcharts.renderers.tick.AxisTickRenderer;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
+import java.text.DecimalFormat;
 import java.time.Month;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,6 +55,9 @@ public class DChartsView extends CustomComponent implements EaserTab {
 
             Map<Month, List<TankFuellung>> yearMap = new HashMap<>();
             List<TankFuellung> tankfuellungenInYear = namedQuery.getResultList().stream().filter(e -> e.getDatum().getYear() == year).collect(Collectors.toList());
+            // calculate average Menge in a year
+            double averageMenge = tankfuellungenInYear.stream().mapToDouble(t -> t.getMenge().doubleValue()).average().getAsDouble();
+            double averagePreisProLiter = tankfuellungenInYear.stream().mapToDouble(t -> t.getPreisProLiter().doubleValue()).average().getAsDouble();
 
             List<TankFuellung> tankfulInJanuary = tankfuellungenInYear.stream().filter(e -> e.getDatum().getMonth() == Month.JANUARY).collect(Collectors.toList());
             List<TankFuellung> tankfulInFebruary = tankfuellungenInYear.stream().filter(e -> e.getDatum().getMonth() == Month.FEBRUARY).collect(Collectors.toList());
@@ -138,7 +143,7 @@ public class DChartsView extends CustomComponent implements EaserTab {
 
             }
 
-            SeriesDefaults seriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.BAR);
+            SeriesDefaults barSeriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.BAR);
 
             Axes axes = new Axes().addAxis(new XYaxis()
                     .setRenderer(AxisRenderers.CATEGORY)
@@ -157,13 +162,28 @@ public class DChartsView extends CustomComponent implements EaserTab {
                     .setTooltipLocation(TooltipLocations.NORTH)
                     .setTooltipAxes(TooltipAxes.XY_BAR);
 
-            String titleAsString = "Tankfüllungen im Jahr " + year;
+            String formattedAveragePreisProLiter = new DecimalFormat("#.##").format(averagePreisProLiter);
+            String titleAsString = "Tankfüllungen im Jahr " + year + " ( Ø " + formattedAveragePreisProLiter + " CHF/Liter)";
             Title title = new Title(titleAsString);
+
+
+            CanvasOverlay canvasOverlay = new CanvasOverlay()
+                    .setShow(true)
+                    .setObject(
+                            new DashedHorizontalLine()
+                                    .setY(averageMenge)
+                                    .setTooltipFormatString("Durchschnittliche Betankung " + averageMenge + "l")
+                                    .setShowTooltip(true)
+                                    .setLineWidth(4)
+                                    .setColor("rgb(0, 0, 0)")
+                                    .setShadow(false));
+
             Options options = new Options()
-                    .setSeriesDefaults(seriesDefaults)
+                    .setSeriesDefaults(barSeriesDefaults)
                     .setTitle(title)
                     .setSeries(series)
                     .setAxes(axes)
+                    .setCanvasOverlay(canvasOverlay)
                     .setHighlighter(highlighter);
 
 
