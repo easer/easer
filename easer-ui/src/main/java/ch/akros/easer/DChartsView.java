@@ -55,10 +55,13 @@ public class DChartsView extends CustomComponent implements EaserTab {
 
             Map<Month, List<TankFuellung>> yearMap = new HashMap<>();
             List<TankFuellung> tankfuellungenInYear = namedQuery.getResultList().stream().filter(e -> e.getDatum().getYear() == year).collect(Collectors.toList());
-            // calculate average Menge in a year
+
+            // calculate some values a year
             double averageMenge = tankfuellungenInYear.stream().mapToDouble(t -> t.getMenge().doubleValue()).average().getAsDouble();
             double averagePreisProLiter = tankfuellungenInYear.stream().mapToDouble(t -> t.getPreisProLiter().doubleValue()).average().getAsDouble();
-
+            String formattedAveragePreisProLiter = new DecimalFormat("#.##").format(averagePreisProLiter);
+            String formattedAverageMenge = new DecimalFormat("#.##").format(averageMenge);
+            
             List<TankFuellung> tankfulInJanuary = tankfuellungenInYear.stream().filter(e -> e.getDatum().getMonth() == Month.JANUARY).collect(Collectors.toList());
             List<TankFuellung> tankfulInFebruary = tankfuellungenInYear.stream().filter(e -> e.getDatum().getMonth() == Month.FEBRUARY).collect(Collectors.toList());
             List<TankFuellung> tankfulInMarch = tankfuellungenInYear.stream().filter(e -> e.getDatum().getMonth() == Month.MARCH).collect(Collectors.toList());
@@ -162,7 +165,7 @@ public class DChartsView extends CustomComponent implements EaserTab {
                     .setTooltipLocation(TooltipLocations.NORTH)
                     .setTooltipAxes(TooltipAxes.XY_BAR);
 
-            String formattedAveragePreisProLiter = new DecimalFormat("#.##").format(averagePreisProLiter);
+
             String titleAsString = "Tankfüllungen im Jahr " + year + " ( Ø " + formattedAveragePreisProLiter + " CHF/Liter)";
             Title title = new Title(titleAsString);
 
@@ -172,7 +175,7 @@ public class DChartsView extends CustomComponent implements EaserTab {
                     .setObject(
                             new DashedHorizontalLine()
                                     .setY(averageMenge)
-                                    .setTooltipFormatString("Durchschnittliche Betankung " + averageMenge + "l")
+                                    .setTooltipFormatString("Durchschnittliche Betankung " + formattedAverageMenge + "l")
                                     .setShowTooltip(true)
                                     .setLineWidth(4)
                                     .setColor("rgb(0, 0, 0)")
