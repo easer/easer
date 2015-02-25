@@ -174,7 +174,7 @@ public class DChartsView extends CustomComponent implements EaserTab {
                             .setMax(100)
                             .setTickInterval(20))
                     .addAxis(new XYaxis(XYaxes.Y2)
-                            .setTickOptions(new AxisTickRenderer().setFormatString("%f SFr./Liter"))
+                            .setTickOptions(new AxisTickRenderer().setFormatString("%.2f SFr./Liter"))
                             .setTicks(new Ticks().add(0.0, 0.4, 0.8, 1.2, 1.6, 2.0))
                             .setBorderColor("rgb(255,165,0)"));
 
