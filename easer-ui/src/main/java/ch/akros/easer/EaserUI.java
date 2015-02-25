@@ -31,6 +31,8 @@ public class EaserUI extends UI {
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
+        this.setLocale(vaadinRequest.getLocale());
+        this.getSession().setLocale(vaadinRequest.getLocale());
         tsMain.setStyleName("ts-main");
         tsMain.addTab(tankenView, "tanken");
         tsMain.addTab(dchartsViewTab, "dashboard");

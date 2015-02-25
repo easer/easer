@@ -158,7 +158,7 @@ public class DChartsView extends CustomComponent implements EaserTab {
                             .setMax(100).setTickInterval(20))
                     .addAxis(
                             new XYaxis(XYaxes.Y2)
-                                    .setTickOptions(new AxisTickRenderer().setFormatString("%d CHF/l"))
+                                    .setTickOptions(new AxisTickRenderer().setFormatString("%d SFr./l"))
                                     .setDrawMajorGridlines(false)
                                     .setMax(2)
                                     .setBorderColor("rgb(255,165,0)"));
@@ -172,7 +172,7 @@ public class DChartsView extends CustomComponent implements EaserTab {
                     .setTooltipAxes(TooltipAxes.XY_BAR);
 
 
-            String titleAsString = "Tankfüllungen im Jahr " + year + " ( Ø " + formattedAveragePreisProLiter + " CHF/Liter)";
+            String titleAsString = "Tankfüllungen im Jahr " + year + " ( Ø " + formattedAveragePreisProLiter + " SFr./Liter)";
             Title title = new Title(titleAsString);
 
 
@@ -188,7 +188,7 @@ public class DChartsView extends CustomComponent implements EaserTab {
                                     .setShadow(false))
                     .setObject(new DashedHorizontalLine()
                             .setY(averagePreisProLiterTransformedForY2)
-                            .setTooltipFormatString("Durchschnittlicher Literpreis " + formattedAveragePreisProLiter + " CHF/Liter")
+                            .setTooltipFormatString("Durchschnittlicher Literpreis " + formattedAveragePreisProLiter + " SFr./Liter")
                             .setShowTooltip(true)
                             .setLineWidth(2)
                             .setColor("rgb(255,165,0)")

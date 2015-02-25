@@ -7,6 +7,7 @@ import ch.akros.easer.ui.EaserTab;
 import ch.akros.easer.ui.LocalDateField;
 import com.vaadin.addon.jpacontainer.EntityItem;
 import com.vaadin.addon.jpacontainer.JPAContainer;
+import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.validator.BeanValidator;
 import com.vaadin.event.ShortcutAction;
@@ -21,6 +22,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 /**
@@ -40,7 +43,7 @@ public class TankenView extends CustomComponent implements EaserTab {
 
     private Button btnNeueTankfuellung = new Button("neue Tankfüllung...", FontAwesome.CAR);
     private VerticalLayout tabTanken = new VerticalLayout();
-    private Table tblTankfuellung = new Table();
+
 
     @PostConstruct
     private void init() {
@@ -150,8 +153,20 @@ public class TankenView extends CustomComponent implements EaserTab {
     }
 
     private Table buildTable() {
-
         final String CRUD_COLUMN = "crud";
+
+        Table tblTankfuellung = new Table() {
+            @Override
+            protected String formatPropertyValue(Object rowId,
+                                                 Object colId, Property property) {
+                // Format by property type
+                if (property.getType() == LocalDate.class) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+                    return ((LocalDate) property.getValue()).format(formatter);
+                }
+                return super.formatPropertyValue(rowId, colId, property);
+            }
+        };
 
         tblTankfuellung.setContainerDataSource(tankFuellungJPAContainer);
         tblTankfuellung.addGeneratedColumn(CRUD_COLUMN, (source, itemId, columnId) -> {
