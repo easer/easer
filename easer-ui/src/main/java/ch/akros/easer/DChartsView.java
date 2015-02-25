@@ -59,9 +59,11 @@ public class DChartsView extends CustomComponent implements EaserTab {
             // calculate some values a year
             double averageMenge = tankfuellungenInYear.stream().mapToDouble(t -> t.getMenge().doubleValue()).average().getAsDouble();
             double averagePreisProLiter = tankfuellungenInYear.stream().mapToDouble(t -> t.getPreisProLiter().doubleValue()).average().getAsDouble();
+            double averagePreisProLiterTransformedForY2 = averagePreisProLiter * 50;
             String formattedAveragePreisProLiter = new DecimalFormat("#.##").format(averagePreisProLiter);
+            String formattedAveragePreisProLiterTransformedForY2 = new DecimalFormat("#.##").format(averagePreisProLiterTransformedForY2);
             String formattedAverageMenge = new DecimalFormat("#.##").format(averageMenge);
-            
+
             List<TankFuellung> tankfulInJanuary = tankfuellungenInYear.stream().filter(e -> e.getDatum().getMonth() == Month.JANUARY).collect(Collectors.toList());
             List<TankFuellung> tankfulInFebruary = tankfuellungenInYear.stream().filter(e -> e.getDatum().getMonth() == Month.FEBRUARY).collect(Collectors.toList());
             List<TankFuellung> tankfulInMarch = tankfuellungenInYear.stream().filter(e -> e.getDatum().getMonth() == Month.MARCH).collect(Collectors.toList());
@@ -151,11 +153,15 @@ public class DChartsView extends CustomComponent implements EaserTab {
             Axes axes = new Axes().addAxis(new XYaxis()
                     .setRenderer(AxisRenderers.CATEGORY)
                     .setTicks(new Ticks().add("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember")))
+                    .addAxis(new XYaxis(XYaxes.Y)
+                            .setTickOptions(new AxisTickRenderer().setFormatString("%d l"))
+                            .setMax(100).setTickInterval(20))
                     .addAxis(
-                            new XYaxis(XYaxes.Y)
-                                    .setTickOptions(
-                                            new AxisTickRenderer()
-                                                    .setFormatString("%d l")));
+                            new XYaxis(XYaxes.Y2)
+                                    .setTickOptions(new AxisTickRenderer().setFormatString("%d CHF/l"))
+                                    .setDrawMajorGridlines(false)
+                                    .setMax(2)
+                                    .setBorderColor("rgb(255,165,0)"));
 
             Highlighter highlighter = new Highlighter()
                     .setShow(true)
@@ -175,11 +181,18 @@ public class DChartsView extends CustomComponent implements EaserTab {
                     .setObject(
                             new DashedHorizontalLine()
                                     .setY(averageMenge)
-                                    .setTooltipFormatString("Durchschnittliche Betankung " + formattedAverageMenge + "l")
+                                    .setTooltipFormatString("Durchschnittliche Betankung " + formattedAverageMenge + " l")
                                     .setShowTooltip(true)
-                                    .setLineWidth(4)
+                                    .setLineWidth(2)
                                     .setColor("rgb(0, 0, 0)")
-                                    .setShadow(false));
+                                    .setShadow(false))
+                    .setObject(new DashedHorizontalLine()
+                            .setY(averagePreisProLiterTransformedForY2)
+                            .setTooltipFormatString("Durchschnittlicher Literpreis " + formattedAveragePreisProLiter + " CHF/Liter")
+                            .setShowTooltip(true)
+                            .setLineWidth(2)
+                            .setColor("rgb(255,165,0)")
+                            .setShadow(false));
 
             Options options = new Options()
                     .setSeriesDefaults(barSeriesDefaults)
