@@ -90,6 +90,7 @@ public class TankenView extends CustomComponent implements EaserTab {
         fldFahrer.setImmediate(true);
         fldFahrer.setRequired(true);
         fldFahrer.addValidator(new BeanValidator(TankFuellung.class, TankFuellung.Properties.fahrer.name()));
+        fldFahrer.focus();
 
         TextField fldMenge = new TextField(MENGE);
         fldMenge.setNullRepresentation("");

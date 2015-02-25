@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import java.text.DecimalFormat;
 import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -150,18 +151,32 @@ public class DChartsView extends CustomComponent implements EaserTab {
 
             SeriesDefaults barSeriesDefaults = new SeriesDefaults().setRenderer(SeriesRenderers.BAR);
 
+            Locale locale = this.getLocale();
+            if (locale == null) {
+                locale = Locale.GERMAN;
+            }
             Axes axes = new Axes().addAxis(new XYaxis()
                     .setRenderer(AxisRenderers.CATEGORY)
-                    .setTicks(new Ticks().add("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember")))
+                    .setTicks(new Ticks().add(Month.JANUARY.getDisplayName(TextStyle.FULL, locale),
+                            Month.FEBRUARY.getDisplayName(TextStyle.FULL, locale),
+                            Month.MARCH.getDisplayName(TextStyle.FULL, locale),
+                            Month.APRIL.getDisplayName(TextStyle.FULL, locale),
+                            Month.MAY.getDisplayName(TextStyle.FULL, locale),
+                            Month.JUNE.getDisplayName(TextStyle.FULL, locale),
+                            Month.JULY.getDisplayName(TextStyle.FULL, locale),
+                            Month.AUGUST.getDisplayName(TextStyle.FULL, locale),
+                            Month.SEPTEMBER.getDisplayName(TextStyle.FULL, locale),
+                            Month.OCTOBER.getDisplayName(TextStyle.FULL, locale),
+                            Month.NOVEMBER.getDisplayName(TextStyle.FULL, locale),
+                            Month.DECEMBER.getDisplayName(TextStyle.FULL, locale))))
                     .addAxis(new XYaxis(XYaxes.Y)
-                            .setTickOptions(new AxisTickRenderer().setFormatString("%d l"))
-                            .setMax(100).setTickInterval(20))
-                    .addAxis(
-                            new XYaxis(XYaxes.Y2)
-                                    .setTickOptions(new AxisTickRenderer().setFormatString("%d SFr./l"))
-                                    .setDrawMajorGridlines(false)
-                                    .setMax(2)
-                                    .setBorderColor("rgb(255,165,0)"));
+                            .setTickOptions(new AxisTickRenderer().setFormatString("%d Liter"))
+                            .setMax(100)
+                            .setTickInterval(20))
+                    .addAxis(new XYaxis(XYaxes.Y2)
+                            .setTickOptions(new AxisTickRenderer().setFormatString("%f SFr./Liter"))
+                            .setTicks(new Ticks().add(0.0, 0.4, 0.8, 1.2, 1.6, 2.0))
+                            .setBorderColor("rgb(255,165,0)"));
 
             Highlighter highlighter = new Highlighter()
                     .setShow(true)
@@ -181,7 +196,7 @@ public class DChartsView extends CustomComponent implements EaserTab {
                     .setObject(
                             new DashedHorizontalLine()
                                     .setY(averageMenge)
-                                    .setTooltipFormatString("Durchschnittliche Betankung " + formattedAverageMenge + " l")
+                                    .setTooltipFormatString("Durchschnittliche Betankung " + formattedAverageMenge + " Liter")
                                     .setShowTooltip(true)
                                     .setLineWidth(2)
                                     .setColor("rgb(0, 0, 0)")
