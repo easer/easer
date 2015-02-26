@@ -70,6 +70,7 @@ public class DChartsView extends CustomComponent implements EaserTab {
 
             // calculate some values a year
             double averageMenge = tankfuellungenInYear.stream().mapToDouble(t -> t.getMenge().doubleValue()).average().getAsDouble();
+            double sumMenge = tankfuellungenInYear.stream().mapToDouble(t -> t.getMenge().doubleValue()).sum();
             double averagePreisProLiter = tankfuellungenInYear.stream().mapToDouble(t -> t.getPreisProLiter().doubleValue()).average().getAsDouble();
             double averagePreisProLiterTransformedForY2 = averagePreisProLiter * 50;
             String formattedAveragePreisProLiter = new DecimalFormat(DECIMAL_FORMAT_PATTERN).format(averagePreisProLiter);
@@ -197,7 +198,7 @@ public class DChartsView extends CustomComponent implements EaserTab {
                     .setTooltipAxes(TooltipAxes.XY_BAR);
 
 
-            String titleAsString = "Tankfüllungen im Jahr " + year + " ( Ø " + formattedAveragePreisProLiter + TEXT_SFR_LITER + ")";
+            String titleAsString = "Tankfüllungen im Jahr " + year + " (Ø " + formattedAveragePreisProLiter + TEXT_SFR_LITER + ", Total: " + sumMenge + " Liter)";
             Title title = new Title(titleAsString);
 
 
