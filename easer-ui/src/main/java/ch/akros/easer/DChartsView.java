@@ -36,7 +36,7 @@ public class DChartsView extends CustomComponent implements EaserTab {
     public static final String TEXT_SFR_LITER = " SFr./Liter";
     public static final String TEXT_TANKFÜLLUNG = "Tankfüllung";
 
-    public static final String COLOR_BLACK = "rgb(255,165,0)";
+    public static final String COLOR_BLACK = "rgb(0,0,0)";
     public static final String COLOR_ORANGE = "rgb(255,165,0)";
 
     public static final String DECIMAL_FORMAT_PATTERN = "#.##";
