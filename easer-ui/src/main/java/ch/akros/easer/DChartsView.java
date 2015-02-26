@@ -35,7 +35,6 @@ public class DChartsView extends CustomComponent implements EaserTab {
 
     public static final String TEXT_SFR_LITER = " SFr./Liter";
     public static final String TEXT_TANKFÜLLUNG = "Tankfüllung";
-    public static final String TEXT_LITER = " Liter";
 
     public static final String COLOR_BLACK = "rgb(255,165,0)";
     public static final String COLOR_ORANGE = "rgb(255,165,0)";
@@ -44,6 +43,9 @@ public class DChartsView extends CustomComponent implements EaserTab {
 
     public static final String FORMAT_STRING_LITER = "%d Liter";
     public static final String FORMAT_STRING_LITERPREIS = "%.2f" + TEXT_SFR_LITER;
+    public static final String TEXT_CHART_TITLE = "Tankfüllungen im Jahr %d (Ø  %s, Total: %s Liter)";
+    public static final String TEXT_AVERAGE_BETANKUNG = "Durchschnittliche Betankung %s Liter";
+    public static final String TEXT_AVERAGE_LITERPREIS = "Durchschnittlicher Literpreis %s SFr./Liter";
     @Inject
     private JPAContainer<TankFuellung> tankFuellungJPAContainer;
 
@@ -73,7 +75,9 @@ public class DChartsView extends CustomComponent implements EaserTab {
             double sumMenge = tankfuellungenInYear.stream().mapToDouble(t -> t.getMenge().doubleValue()).sum();
             double averagePreisProLiter = tankfuellungenInYear.stream().mapToDouble(t -> t.getPreisProLiter().doubleValue()).average().getAsDouble();
             double averagePreisProLiterTransformedForY2 = averagePreisProLiter * 50;
+
             String formattedAveragePreisProLiter = new DecimalFormat(DECIMAL_FORMAT_PATTERN).format(averagePreisProLiter);
+            String formattedSumMenge = new DecimalFormat(DECIMAL_FORMAT_PATTERN).format(sumMenge);
             String formattedAverageMenge = new DecimalFormat(DECIMAL_FORMAT_PATTERN).format(averageMenge);
 
             List<TankFuellung> tankfulInJanuary = tankfuellungenInYear.stream().filter(e -> e.getDatum().getMonth() == Month.JANUARY).collect(Collectors.toList());
@@ -197,24 +201,24 @@ public class DChartsView extends CustomComponent implements EaserTab {
                     .setTooltipLocation(TooltipLocations.NORTH)
                     .setTooltipAxes(TooltipAxes.XY_BAR);
 
+            String chartTitleResolved = String.format(TEXT_CHART_TITLE, year, formattedAveragePreisProLiter, formattedSumMenge);
+            String textAverageBetankungResolved = String.format(TEXT_AVERAGE_BETANKUNG, formattedAverageMenge);
+            String textAverageLiterPreisResolved = String.format(TEXT_AVERAGE_LITERPREIS, formattedAveragePreisProLiter);
 
-            String titleAsString = "Tankfüllungen im Jahr " + year + " (Ø " + formattedAveragePreisProLiter + TEXT_SFR_LITER + ", Total: " + sumMenge + " Liter)";
-            Title title = new Title(titleAsString);
-
-
+            Title title = new Title(chartTitleResolved);
             CanvasOverlay canvasOverlay = new CanvasOverlay()
                     .setShow(true)
                     .setObject(
                             new DashedHorizontalLine()
                                     .setY(averageMenge)
-                                    .setTooltipFormatString("Durchschnittliche Betankung " + formattedAverageMenge + TEXT_LITER)
+                                    .setTooltipFormatString(textAverageBetankungResolved)
                                     .setShowTooltip(true)
                                     .setLineWidth(2)
-                                    .setColor("rgb(0, 0, 0)")
+                                    .setColor(COLOR_BLACK)
                                     .setShadow(false))
                     .setObject(new DashedHorizontalLine()
                             .setY(averagePreisProLiterTransformedForY2)
-                            .setTooltipFormatString("Durchschnittlicher Literpreis " + formattedAveragePreisProLiter + TEXT_SFR_LITER)
+                            .setTooltipFormatString(textAverageLiterPreisResolved)
                             .setShowTooltip(true)
                             .setLineWidth(2)
                             .setColor(COLOR_ORANGE)
@@ -232,7 +236,7 @@ public class DChartsView extends CustomComponent implements EaserTab {
             DCharts chart = new DCharts();
             chart.setSizeFull();
             chart.setMarginRight(10);
-            chart.setDescription(titleAsString);
+            chart.setDescription(chartTitleResolved);
             chart.setDataSeries(dataSeries)
                     .setOptions(options)
                     .show();
@@ -243,6 +247,12 @@ public class DChartsView extends CustomComponent implements EaserTab {
         setCompositionRoot(layout);
     }
 
+    /**
+     * We need this for evaluation of the number of Dataseries
+     *
+     * @param yearMap
+     * @return Month
+     */
     private Month getMonthWithMostTankfuellungen(Map<Month, List<TankFuellung>> yearMap) {
 
         Month month = Month.JANUARY;
